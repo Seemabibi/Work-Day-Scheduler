@@ -1,35 +1,42 @@
-var options = {
-  starHour: 9,
+var times = {
+  startHour: 9,
   endHour: 17,
+};
+
+//function to save the information entered to local storage
+function savePlan(e) {
+  var textEntry = $(e.target).parent().find(".description").val(); 
+  var hour = $(e.target).parent().attr("data-hour");
+
+  //stores text entry to local storage under the key of specific hour 
+  localStorage.setItem(hour, textEntry);
+
 }
 
-// funtion to save the informaton entered to local storage 
-function newTimeslots() {
+//check time to update the css color by changing the class based on past present future 
+function updateColor() {
+  var currentHour = moment().hour();
 
-    var currentHour = moment().hour();
+  
+  $(".time-block").each(function (index, row) {
+    var hour = $(row).attr("data-hour");
 
-    $('.time-block').each(function (index, element) {
-        var hour = ¢(element).attr('id');
-
-        if (hour < currentHour) {
-            $(element).find('description'.addClass('past');
-        }
-        else if (hour ==currentHour) {
-            $(element).find('description').addClass('present');
-            $(element).find('description').addClass('past');
-        }
-        else {
-            $(element).find('description').addClass('future');
-            $(element).find('description').addClass('present');
-            $(element).find('description').addClass('past');
+    if (hour < currentHour) {
+      $(row).find(".description").addClass("past");
+    } else if (hour == currentHour) {
+      $(row).find(".description").addClass("present");
+    } else {
+      $(row).find(".description").addClass("future");
     }
-
-    });
+  });
 }
 
-//create for loop to go through and creates all elements for the UI
+//TODOfunction to generate the time slots
+function createTimeSlots() {
 
-for (var hour = times.startHour; hour <= times.endHour; hour++) {
+  //create for loop to go through and creates all elements for the UI
+
+  for (var hour = times.startHour; hour <= times.endHour; hour++) {
     var storedItem = localStorage.getItem(hour);
     var timeSlot = $("<div>").addClass("row time-block"); 
     timeSlot.attr("data-hour", hour);
@@ -46,56 +53,31 @@ for (var hour = times.startHour; hour <= times.endHour; hour++) {
     buttonContainer.on("click", savePlan);
     var button = $("<button>").addClass("fas fa-save");
 
-newTimeslots();
+    //appends elements into each other
+    outerBox.append(enterText);
+    buttonContainer.append(button);
+    timeSlot.append(timeHour);
+    timeSlot.append(outerBox);
+    timeSlot.append(buttonContainer);
 
-function onSaveTask (e) {
-    console.log(e.target);
-
-    var hour = $(e.target).parent[].parent[].find('.description').val();
-    var task = $(e.target).parent[].parent[].attr('id');
-
-    localStorage.setItem(hour,task);
-    console.log(task,hour);
-
+    //appends to HTML into container class 
+    $(".container").append(timeSlot);
+  }
 }
 
-// function generateTimeSlots () {
-    // for (var hour = 10; hour <= 17; hour++) }
-
-// var savedTask = localStorage.getItem(hour);
-function savePlan(e) {
-    var textEntry = $(e.target).parent().find(".description").val(); 
-    var hour = $(e.target).parent().attr("data-hour");
-  
-    //stores text entry to local storage under the key of specific hour 
-    localStorage.setItem(hour, textEntry);
-  
-  
-
-// }
-// Load in the timeslots 
-
-$('#10 .description').val(localStorage.getItem)("10")
-$('#11 .description').val(localStorage.getItem)("11")
-$('#12 .description').val(localStorage.getItem)("12")
-$('#13 .description').val(localStorage.getItem)("13")
-$('#14 .description').val(localStorage.getItem)("14")
-$('#15 .description').val(localStorage.getItem)("15")
-$('#15 .description').val(localStorage.getItem)("16")
-$('#15 .description').val(localStorage.getItem)("17")
-
-function init () {
-    $('.lead').text(today.format("MMM Do, YYYY"));
-
-    $('container').on('click', onSave);
-
-    setInterval(newTime, 10000);
+//impliment the time at the top of page
+function init() {
+  var today = moment();
+  $("#currentDay").text(today.format("MMM Do, YYYY, h:mm:ss a"));
 }
 
+//allows time to change by second
+setInterval(function () {
+  init();
+}, 1000);
 
- generateTimeslots (){
-    for (var hour=10; hour <= 17; hour++){
-        // load the task from local storage
-        var savedTask = localStorage.getItem(hour);
-    }
-}
+init();
+
+createTimeSlots();
+
+updateColor();
